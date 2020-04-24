@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+
+        <script src="../../js/studentJS/jquery.min.js"></script>
+    <!--    <script src="../../js/studentJS/bootstrap.min.js"></script>-->
+    <style type="text/css">
+        .cztable{
+            padding: 50px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            word-break: break-all;
+            word-wrap: break-word;
+            font-family: "Microsoft Yahei", Verdana, Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="cztable">
+    <table class="table table-hover table-condensed table-bordered">
+        <caption>
+            <span class="pull-left">选课信息-</span>
+            <span id="info">我的课程</span>
+            <a href="javascript:;"><span class="pull-right" style="margin-left: 10px;" id="sum">所有课程</span></a>
+            <a href="javascript:;"><span class="pull-right" id="mine">我的课程</span></a>
+        </caption>
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>课程</th>
+            <th>学分</th>
+            <th>总学时</th>
+            <th>类别</th>
+            <th>任课老师</th>
+            <th>考核方式</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Tanmay</td>
+            <td>Bangalore</td>
+            <td>560001</td>
+            <td>560001</td>
+            <td>560001</td>
+        </tr>
+        <tr>
+            <td>Sachin</td>
+            <td>Mumbai</td>
+            <td>400003</td>
+            <td>560001</td>
+            <td>560001</td>
+        </tr>
+        <tr>
+            <td>Uma</td>
+            <td>Pune</td>
+            <td>411027</td>
+            <td>560001</td>
+            <td>560001</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script type="text/javascript">
+    window.onload=function () {
+        var info=$('#info');
+        $('#sum').click(function () {
+            info.text("所有课程");
+        });
+        $('#mine').click(function () {
+            info.text("我的课程");
+        });
+    };
+    </script>
+</html>

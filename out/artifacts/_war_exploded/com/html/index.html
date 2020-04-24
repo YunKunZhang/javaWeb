@@ -1,0 +1,167 @@
+<%@ page pageEncoding="UTF-8" %>
+<html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Home</title>
+    <link rel="stylesheet" href="../css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../css/homeStyle.css">
+    <link type="text/css" href="../css/flipclock.css" rel="stylesheet">
+    <link type="text/css" href="../css/style.css" rel="stylesheet">
+    <style type="text/css">
+        iframe{
+            position: absolute;
+            left:0;
+            top: 0;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+<div class="container-scroller">
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="navbar-brand-wrapper d-flex justify-content-center">
+            <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
+                <a class="brand-logo-mini">学生信息管理系统</a>
+                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                    <span class="mdi mdi-sort-variant"></span>
+                </button>
+            </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+            <ul class="navbar-nav mr-lg-4 w-100">
+                <li class="nav-item nav-search d-none d-lg-block w-100">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search now" aria-label="search"
+                               aria-describedby="search">
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item nav-profile dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                        <span class="nav-profile-name">张玉坤</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item">
+                            <i class="mdi mdi-logout text-primary"></i>
+                            退出
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+                    data-toggle="offcanvas">
+                <span class="mdi mdi-menu"></span>
+            </button>
+        </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="mdi mdi-home menu-icon"></i>
+                        <span class="menu-title" id="index">首页</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="mdi mdi-view-agenda menu-icon"></i>
+                        <span class="menu-title" id="info">个人信息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="javascript:;" aria-expanded="false"
+                       aria-controls="ui-basic">
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <span class="menu-title" id="course">课程信息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="mdi mdi-view-headline menu-icon"></i>
+                        <span class="menu-title" id="score">成绩信息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="mdi mdi-chart-pie menu-icon"></i>
+                        <span class="menu-title" id="choose">选课信息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="mdi mdi-grid-large menu-icon"></i>
+                        <span class="menu-title" id="change">修改密码</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div id="main">
+            <div class="agile_info_shadow">
+                <div class="img_wthee_post1">
+                    <h3 class="w3_inner_tittle">欢迎登录！</h3>
+                    <div class="main-example">
+                        <div class="clock"></div>
+                        <div class="message"></div>
+
+                    </div>
+                </div>
+            </div>
+            <iframe name="right" id="frame" frameborder="no" scrolling="auto" width="100%" height="100%" allowtransparency="true">
+            </iframe>
+        </div>
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<script src="../js/studentJS/base.js"></script>
+<script type="text/javascript" src="../js/studentJS/jquery.min.js"></script>
+<script src="../js/studentJS/flipclock.js"></script>
+<script type="text/javascript">
+    window.onload=function(){
+        var clock;
+
+        $(document).ready(function() {
+
+            clock = $('.clock').FlipClock({
+                clockFace: 'HourlyCounter'
+            });
+        });
+
+        $('.menu-title').click(function () {
+            $('.agile_info_shadow').animate({opacity:'0'},100);
+        });
+
+        $('#index').click(function () {
+            $('.agile_info_shadow').animate({opacity:'1'},100);
+            $('#main>iframe').attr("src","");
+        });
+        $('#info').click(function(){
+            $('#main>iframe').attr("src","student/info.html");
+        });
+        $('#course').click(function(){
+            $('#main>iframe').attr("src","student/course.html");
+        });
+        $('#score').click(function () {
+            $('#main>iframe').attr("src","student/score.html");
+        });
+        $('#choose').click(function () {
+            $('#main>iframe').attr("src","student/choose.html");
+        });
+        $('#change').click(function () {
+            $('#main>iframe').attr("src","changePassword.html");
+        });
+    };
+</script>
+</body>
+</html>
+

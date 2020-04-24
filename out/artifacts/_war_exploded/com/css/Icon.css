@@ -1,0 +1,41 @@
+@font-face {
+    font-family: "Material Design Icons";
+    src: url("../image/common/materialdesignicons-webfont.ttf?v=2.8.94") format("truetype");
+    font-weight: normal;
+    font-style: normal
+}
+
+.mdi:before, .mdi-set {
+    display: inline-block;
+    font: normal normal normal 24px/1 "Material Design Icons";
+    font-size: inherit;
+    text-rendering: auto;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.mdi-circle-outline:before {
+    content: "\F765"
+}
+
+.mdi-view-headline:before {
+    content: "\F571"
+}
+
+.mdi-chart-pie:before {
+    content: "\F12B"
+}
+
+.mdi-grid-large:before {
+    content: "\F757"
+}
+
+
+.mdi-account:before {
+    content: "\F004"
+}
+
+.mdi-emoticon:before {
+    content: "\F1F2"
+}

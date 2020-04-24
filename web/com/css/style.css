@@ -1,0 +1,129 @@
+
+/*-- /agile_top_w3_post_sections --*/
+.img_wthee_post1{
+    background: url(../image/common/pic1.jpg)no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    min-height: 90%;
+    padding: 3em 3em;
+}
+.agile_top_w3_post_info{
+    width: 90%;
+    margin: 0 auto;
+    height: 100%;
+}
+.agile_info_shadow {
+    padding: 1em;
+    box-shadow: 0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+    -webkit-box-shadow: 0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+    -moz-box-shadow: 0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+    -o-box-shadow:0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+    border: 1px solid #ddd;
+}
+
+.count_info{
+    float: left;
+}
+
+h4.count {
+    font-size: 1.5em;
+    color: #fff;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+h3.w3_inner_tittle.two {
+    color: #000;
+    font-weight: 600;
+}
+p.text-no {
+    color: #fff;
+    font-size: 1.1em;
+    background: #e53238;
+    padding: 5px 21px;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -o-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -moz-border-radius: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+.year-info {
+    float: right;
+}
+span.year {
+    font-size: 1em;
+    font-weight: 400;
+    display: block;
+    background: none;
+    color: rgb(205, 209, 212);
+    text-align: center;
+    letter-spacing: 1px;
+    margin: 0.5em 0;
+}
+.stats-wrap {
+    margin-bottom: 1.1em;
+}
+.stats-wrap:nth-child(4) {
+    margin-bottom:0;
+}
+.agile_top_w3_post_sections {
+    margin: 2em 0;
+}
+h3.w3_inner_tittle {
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0.5em 0 1em 0;
+    font-weight: 800;
+    font-size: 1.4em;
+    letter-spacing:1px;
+}
+.inner_content_w3_agile_info {
+    margin-top:4.5em;
+}
+.inner_content_w3_agile_info.two_in {
+    margin-top: 4em;
+}
+.chart_agile.agile_info_shadow {
+    padding: 1em 2em;
+    margin: 0;
+}
+/*-- //agile_top_w3_post_sections --*/
+/*-- /chart--*/
+.top_chart {
+    display: inline-block;
+    float: left;
+    width: 49%;
+    padding: 2em;
+}
+.top_chart canvas {
+    max-width:100%!important;
+}
+canvas#chart0 {
+    height:315px!important;
+}
+canvas#chart1 {
+    height: 315px!important;
+}
+.top_chart:nth-child(2) {
+    margin-left: 1%;
+    float: right;
+}
+/*-- count-down --*/
+.main-example {
+    position: absolute;
+    top:20%;
+    left: 25%;
+    text-align: center;
+    margin:10em 4em 0 4em;
+}
+
+iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+}
