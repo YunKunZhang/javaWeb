@@ -265,6 +265,7 @@ td, th {
     .table-bordered td, .table-bordered th {
         border: 1px solid #ddd !important
     }
+
 }
 
 @font-face {
@@ -2703,6 +2704,14 @@ pre code {
     }
 }
 
+.cztable {
+    padding: 50px;
+}
+
+#choose{
+    margin-left: 20px;
+}
+
 table {
     background-color: transparent
 }
@@ -2714,8 +2723,8 @@ caption {
     text-align: left
 }
 
-th {
-    text-align: left
+th,td{
+    text-align: center;
 }
 
 .table {
@@ -2757,7 +2766,7 @@ th {
 }
 
 .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
-    border: 1px solid #ddd
+    border: 1px solid #ddd;
 }
 
 .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {

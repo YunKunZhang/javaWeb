@@ -26,8 +26,9 @@ window.onload = function () {
         let flag2 = reg2.test(password);
         if (flag1 == true && flag2 == true) {
             let tem = $('.login-form>select').val();
-            $('.login-form>button').attr("disabled","disabled");
+            $('.login-form>button').attr("disabled", true);
             ajaxLogin(num, password, tem);
+            $('.login-form>button').attr("disabled", false);
         } else if (!flag1) {
             alert("账号不符合规范，请重新输入");
         } else if (!flag2) {
@@ -48,7 +49,9 @@ window.onload = function () {
         if (flag1 == true && flag2 == true && flag3 == true) {
             let answer = $('.register-form>input[name="answer"]').val();
             let identity = $('.register-form>select').val();
-            ajaxVerify(num,password,answer,identity);
+            $('.register-form>button').attr("disabled", false);
+            ajaxVerify(num, password, answer, identity);
+            $('.register-form>button').attr("disabled", true);
         } else if (!flag1) {
             alert("账号不符合规范，请重新输入");
         } else if (!flag2) {
@@ -72,8 +75,8 @@ window.onload = function () {
                     alert("该账号并未注册，请先进行注册");
                 } else if (data === "2") {
                     alert("后台异常，请稍后重试");
-                }  else{
-                    window.location=data;
+                } else {
+                    window.location = data;
                 }
             },
             error: function () {
@@ -90,13 +93,13 @@ window.onload = function () {
             async: false,
             data: {'num': num, 'password': password, 'answer': answer, 'identity': identity},
             success: function (data) {
-                if(data==="-1"){
+                if (data === "-1") {
                     alert("账号不存在，请重新输入");
-                }else if(data==="0"){
+                } else if (data === "0") {
                     alert("密保答案错误，请重新输入");
-                }else if(data=="2"){
+                } else if (data == "2") {
                     alert("后台异常，请稍后重试");
-                }else{
+                } else {
                     window.location = data;
                 }
             },

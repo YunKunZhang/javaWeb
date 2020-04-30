@@ -43,7 +43,7 @@ public class Student implements Serializable {
     }
 
     public void setSex(String sex) {
-        this.sex = sex.equals("1") ? "男" : "女";
+        this.sex = sex;
     }
 
     public void setDepartment(String department) {

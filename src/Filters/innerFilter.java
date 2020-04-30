@@ -13,9 +13,11 @@ public class innerFilter implements javax.servlet.Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpSession session = request.getSession(false);
         HttpServletResponse response = (HttpServletResponse) resp;
+        Object login = session.getAttribute("login");
 
-        if (session==null||!session.getAttribute("num").equals(request.getParameter("num"))) {
+        if (session == null || login == null || "false".equals(login)) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
         }
 
         chain.doFilter(req, resp);

@@ -14,17 +14,14 @@ public class outerFilter implements javax.servlet.Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpSession session = request.getSession(false);
         HttpServletResponse response = (HttpServletResponse) resp;
+        Object login = session.getAttribute("login");
 
-        if(session==null){
+        if (session == null || login == null || "false".equals(login)) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        String login=(String) session.getAttribute("login");
-
-        if("true".equals(login)){
-            chain.doFilter(req, resp);
-        }
+        chain.doFilter(req, resp);
     }
 
 }

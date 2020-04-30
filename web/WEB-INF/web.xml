@@ -57,7 +57,7 @@
     //设置进入主界面请求验证
     <servlet>
         <servlet-name>indexServlet</servlet-name>
-        <servlet-class>Servlets.indexServlet</servlet-class>
+        <servlet-class>Servlets.IndexServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -90,7 +90,7 @@
     //用于处理主页面中选择其他页面的请求信息
     <servlet>
         <servlet-name>choosePageServlet</servlet-name>
-        <servlet-class>Servlets.choosePageServlet</servlet-class>
+        <servlet-class>Servlets.ChoosePageServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
@@ -100,12 +100,56 @@
 
     //用于处理修改个人信息页面的请求信息
     <servlet>
-        <servlet-name>ModifyInfoServlet</servlet-name>
-        <servlet-class>Servlets.ModifyInfoServlet</servlet-class>
+        <servlet-name>AlertInfoServlet</servlet-name>
+        <servlet-class>Servlets.AlertIfoServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
-        <servlet-name>ModifyInfoServlet</servlet-name>
-        <url-pattern>/modify</url-pattern>
+        <servlet-name>AlertInfoServlet</servlet-name>
+        <url-pattern>/alertInfo</url-pattern>
+    </servlet-mapping>
+
+    //用于处理获取不同学期课程、成绩信息的请求
+    <servlet>
+        <servlet-name>ChooseSemesterServlet</servlet-name>
+        <servlet-class>Servlets.ChooseSemesterServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ChooseSemesterServlet</servlet-name>
+        <url-pattern>/semester</url-pattern>
+    </servlet-mapping>
+
+    //用于处理获取选修课分页的请求
+    <servlet>
+        <servlet-name>CoursePagingServlet</servlet-name>
+        <servlet-class>Servlets.CoursePagingServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>CoursePagingServlet</servlet-name>
+        <url-pattern>/paging</url-pattern>
+    </servlet-mapping>
+
+    //用于处理选课请求
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>Servlets.RegisterServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    //用于处理查询请求
+    <servlet>
+        <servlet-name>QueryServlet</servlet-name>
+        <servlet-class>Servlets.QueryServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>QueryServlet</servlet-name>
+        <url-pattern>/query</url-pattern>
     </servlet-mapping>
 </web-app>

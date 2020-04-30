@@ -16,9 +16,9 @@
     <div class="thumbnail"><img src="com/image/loginImage/hat.svg"/></div>
     <form class="register-form" method="post">
         <input type="text" name="num" autocomplete="off" placeholder="账号(工作号、教师号、学号)"/>
-        <input type="password" name="password" placeholder="新的密码(任意数字、字母6-18位)"/>
-        <input type="password" name="confirm" placeholder="确认密码"/>
-        <input type="password" name="answer" placeholder="你最喜欢的食物(密保答案)"/>
+        <input type="password" name="password" autocomplete="off" placeholder="新的密码(任意数字、字母6-18位)"/>
+        <input type="password" name="confirm" autocomplete="off" placeholder="确认密码"/>
+        <input type="password" name="answer" autocomplete="off" placeholder="你最喜欢的食物(密保答案)"/>
         <select name="identity">
             <option value="administrator">管理员</option>
             <option value="student">学生</option>
@@ -29,7 +29,7 @@
     </form>
     <form class="login-form" method="post">
         <input type="text" name="num" autocomplete="on" placeholder="账号(工号、教师号、学号)"/>
-        <input type="password" name="password" placeholder="密码"/>
+        <input type="password" name="password" autocomplete="off" placeholder="密码"/>
         <select name="identity">
             <option value="administrator">管理员</option>
             <option value="student">学生</option>

@@ -1,5 +1,7 @@
 package Dao;
 
+import beans.Administrator;
+import beans.Teacher;
 import utils.JDBCUtils;
 
 import java.sql.Connection;
@@ -14,13 +16,13 @@ public class AdministratorDaoImpl implements IAdministratorDao {
 
     //    管理员端登陆验证
     @Override
-    public int selectAdministrator(String num, String password) {
+    public Object selectAdministrator(String num, String password) {
         //返回0表示密码错误，返回1表示数据匹配，返回-1表示未注册,返回2表示后台异常
         boolean exist = ifExist(num);
         if (exist) {
             try {
                 conn = JDBCUtils.getConnection();
-                String sql = "select count(*) from administrator where ManagerNum=? and AES_DECRYPT(UNHEX(ManagerPassword),?)=?";
+                String sql = "select ManagerName from administrator where ManagerNum=? and AES_DECRYPT(UNHEX(ManagerPassword),?)=?";
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, num);
                 ps.setString(2, num);
@@ -28,8 +30,9 @@ public class AdministratorDaoImpl implements IAdministratorDao {
                 rs = ps.executeQuery();
 
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    return rs.getString(1);
                 }
+                return 0;
             } catch (SQLException e) {
                 e.printStackTrace();
                 return 2;
@@ -40,9 +43,63 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         return -1;
     }
 
+    //获取管理员信息
+
+    @Override
+    public Administrator getInfo(String num) {
+        Administrator administrator = new Administrator();
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "SELECT * FROM vi_administrator WHERE ManagerNum=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, num);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                administrator.setNum(rs.getString("ManagerNum"));
+                administrator.setName(rs.getString("ManagerName"));
+                administrator.setSex(rs.getString("ManagerSex"));
+                administrator.setBirthday(rs.getDate("ManagerBirthday"));
+                administrator.setPhone(rs.getString("ManagerPhone"));
+                administrator.setIdentity(rs.getString("SuperManager"));
+            }
+            return administrator;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return null;
+    }
+
+    //修改管理员信息
+
+    @Override
+    public int modifyInfo(String[] info, String num) {
+        //返回1表示修改成功,0表示失败
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "update administrator set ManagerName=?,ManagerSex=?,SuperManager=?,ManagerBirthday=STR_TO_DATE(?,'%Y-%m-%d'),ManagerPhone=? where ManagerNum=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, info[0]);
+            ps.setString(2, info[1]);
+            ps.setString(3, info[2]);
+            ps.setString(4, info[3]);
+            ps.setString(5, info[4]);
+            ps.setString(6, num);
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            JDBCUtils.close2(conn,ps);
+        }
+        return 0;
+    }
+
     //    管理员端密码修改
     @Override
-    public int modifyAdministrator(String num, String password, String answer) {
+    public int modifyPassword(String num, String password, String answer) {
         //返回-1表示该账号不存在,返回0表示密保答案错误，返回1表示修改成功,返回2表示后台异常
         boolean exist = ifExist(num);
         if (exist) {
@@ -72,7 +129,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         boolean exist = false;
         try {
             conn = JDBCUtils.getConnection();
-            String sql = "select count(*) from administrator where ManagerNum=?";
+            String sql = "CALL existAdministrator(?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
             rs = ps.executeQuery();

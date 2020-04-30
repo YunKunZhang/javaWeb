@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="com/css/homeStyle.css">
     <link rel="stylesheet" href="com/css/Icon.css">
     <link rel="stylesheet" href="com/css/style.css">
+    <script type="text/javascript" src="com/js/studentJS/base.js"></script>
+    <script type="text/javascript" src="com/js/studentJS/jquery.min.js"></script>
+    <script type="text/javascript" src="com/js/studentJS/flipclock.js"></script>
 </head>
 <body>
 <div class="container-scroller">
@@ -21,9 +24,6 @@
         <div class="navbar-brand-wrapper d-flex justify-content-center">
             <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
                 <a class="navbar-brand brand-logo">学生信息管理系统</a>
-                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                    <span class="mdi mdi-sort-variant"></span>
-                </button>
             </div>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
@@ -36,19 +36,18 @@
                 </span>
                         </div>
                         <input type="text" class="form-control" placeholder="Search now" aria-label="search"
-                               aria-describedby="search">
+                               aria-describedby="search" readonly="readonly">
                     </div>
                 </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                        <c:set value="${pageContext.request.getAttribute('name')}" var="name"></c:set>
-                        <span class="nav-profile-name"><c:out value="${pageScope.name}"></c:out></span>
+                        <span class="nav-profile-name"><c:out
+                                value="${pageContext.request.getAttribute('name')}"/></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a class="dropdown-item">
-                            <i class="mdi mdi-logout text-primary"></i>
+                        <a class="dropdown-item" id="logout">
                             退出
                         </a>
                     </div>
@@ -115,23 +114,38 @@
                     </div>
                 </div>
             </div>
-            <iframe name="right" id="frame"  frameborder="no" scrolling="auto" width="100%" height="100%">
+            <iframe name="right" id="frame" frameborder="no" scrolling="auto" width="100%" height="100%">
             </iframe>
         </div>
     </div>
     <!-- page-body-wrapper ends -->
 </div>
 </body>
-
-<script type="text/javascript" src="com/js/studentJS/jquery.min.js"></script>
-<script type="text/javascript" src="com/js/studentJS/flipclock.js"></script>
 <script type="text/javascript">
+    javascript:window.history.forward(1);//禁止浏览器退出后返回
+
     $(document).ready(function () {
 
         var clock;
 
         clock = $('.clock').FlipClock({
             clockFace: 'HourlyCounter'
+        });
+
+        //为“退出”添加事件监听
+        $('#logout').click(function () {
+            $.ajax({
+                type:"GET",
+                url:"login",
+                async:false,
+                data:{"logout":"false"},
+                success:function(result){
+                    location.href=result;
+                },
+                error:function () {
+                    location.href="login.jsp";
+                }
+            });
         });
 
         $('.menu-title').click(function () {
@@ -145,21 +159,20 @@
 
 
         $('#info').click(function () {
-            $('#main>iframe').attr("src", "choose?pageName=jsp/studentInfo.jsp");
+            $('#main>iframe').attr("src", "choose?pageName=jsp/showInformation.jsp");
         });
-
 
         $('#course').click(function () {
-            $('#main>iframe').attr("src", "com/html/student/course.html");
+            $('#main>iframe').attr("src", 'choose?pageName=jsp/courseInformation.jsp');
         });
         $('#score').click(function () {
-            $('#main>iframe').attr("src", "com/html/student/score.html");
+            $('#main>iframe').attr("src", "choose?pageName=jsp/gradeInformation.jsp");
         });
         $('#choose').click(function () {
-            $('#main>iframe').attr("src", "com/html/student/choose.html");
+            $('#main>iframe').attr("src", "choose?pageName=jsp/chooseCourse.jsp");
         });
         $('#change').click(function () {
-            $('#main>iframe').attr("src", "com/html/changePassword.html");
+            $('#main>iframe').attr("src", "choose?pageName=jsp/changePassword.jsp");
         });
     });
 </script>

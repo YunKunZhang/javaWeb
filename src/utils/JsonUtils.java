@@ -1,6 +1,8 @@
 package utils;
 
+import beans.Course;
 import beans.Student;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class JsonUtils{
@@ -12,4 +14,9 @@ public class JsonUtils{
         return object.toString();
     }
 
+    //将javabean数组转化为json
+    public static String stringify(Object[] course){
+        JSONArray array = JSONArray.fromObject(course);
+        return array.toString();
+    }
 }
