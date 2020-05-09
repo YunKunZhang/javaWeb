@@ -19,6 +19,7 @@
     <script type="text/javascript" src="com/js/studentJS/flipclock.js"></script>
 </head>
 <body>
+<c:set value="${pageContext.request.session.getAttribute('identity')}" var="identity"></c:set>
 <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="navbar-brand-wrapper d-flex justify-content-center">
@@ -91,10 +92,18 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:;">
-                        <i class="mdi mdi-account menu-icon"></i>
+                        <i class="mdi mdi-chart-pie menu-icon"></i>
                         <span class="menu-title" id="choose">选课信息</span>
                     </a>
                 </li>
+                <c:if test="${identity=='administrator'}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:;">
+                            <i class="mdi mdi-account menu-icon"></i>
+                            <span class="menu-title" id="management">人员管理</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:;">
                         <i class="mdi mdi-emoticon menu-icon"></i>
@@ -118,7 +127,6 @@
             </iframe>
         </div>
     </div>
-    <!-- page-body-wrapper ends -->
 </div>
 </body>
 <script type="text/javascript">
@@ -135,15 +143,15 @@
         //为“退出”添加事件监听
         $('#logout').click(function () {
             $.ajax({
-                type:"GET",
-                url:"login",
-                async:false,
-                data:{"logout":"false"},
-                success:function(result){
-                    location.href=result;
+                type: "GET",
+                url: "login",
+                async: false,
+                data: {"logout": "false"},
+                success: function (result) {
+                    location.href = result;
                 },
-                error:function () {
-                    location.href="login.jsp";
+                error: function () {
+                    location.href = "login.jsp";
                 }
             });
         });
@@ -171,9 +179,33 @@
         $('#choose').click(function () {
             $('#main>iframe').attr("src", "choose?pageName=jsp/chooseCourse.jsp");
         });
+        $('#management').click(function () {
+            $('#main>iframe').attr("src", "choose?pageName=jsp/personnelManagement.jsp");
+        });
         $('#change').click(function () {
             $('#main>iframe').attr("src", "choose?pageName=jsp/changePassword.jsp");
         });
+
+        // $('.menu-title').click(function () {
+        //     let tem = $('#frame').attr("src");
+        //     alert(tem);
+        //     if (tem.indexOf("login.jsp") >= 0) {
+        //         $.ajax({
+        //             type: "GET",
+        //             url: "login",
+        //             async: false,
+        //             data: {"logout": "false"},
+        //             success: function (result) {
+        //
+        //                 location.href = result;
+        //             },
+        //             error: function () {
+        //                 location.href = "login.jsp";
+        //             }
+        //         });
+        //     }
+        // });
+
     });
 </script>
 </html>

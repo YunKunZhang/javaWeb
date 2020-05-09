@@ -16,12 +16,11 @@ public class IndexServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //1.获取会话变量中存储的信息
         HttpSession session = request.getSession(false);
-        Object login = session.getAttribute("login");
 
-        if (session == null || login == null || "false".equals(login)) {
+        if (session == null || !"true".equals(session.getAttribute("login"))) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
-        } else if ("true".equals(login)) {
+        } else {
             request.setAttribute("name", session.getAttribute("name"));
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }

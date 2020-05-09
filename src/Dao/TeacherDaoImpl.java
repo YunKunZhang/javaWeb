@@ -166,7 +166,7 @@ public class TeacherDaoImpl implements ITeacherDao {
         return null;
     }
 
-    //    获取不同学期教师端用户所教授课程的成绩信息
+    //    获取不同学期教师端用户所教授课程的学生成绩信息
 
     @Override
     public Grade[] getGradeInfo(String num, String semester, int pageNum) {
@@ -178,8 +178,8 @@ public class TeacherDaoImpl implements ITeacherDao {
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
             ps.setString(2, getSemester(semester));
-            ps.setInt(3, (pageNum - 1) * 15);
-            ps.setInt(4, pageNum * 15);
+            ps.setInt(3, (pageNum - 1) * 14);
+            ps.setInt(4, pageNum * 14);
 
             rs = ps.executeQuery();
 
@@ -209,6 +209,35 @@ public class TeacherDaoImpl implements ITeacherDao {
             JDBCUtils.close1(conn, ps, rs);
         }
         return null;
+    }
+
+    //    修改不同学期教师端用户所教授课程的学生成绩信息
+
+    @Override
+    public int modifyGradeInfo(String semester, String courseName, String stuNum, String score) {
+        //返回-1表示后台异常
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "UPDATE \n" +
+                    "  election \n" +
+                    "  INNER JOIN course \n" +
+                    "    ON course.`CourseNum` = election.`CourseNum` \n" +
+                    "  INNER JOIN student \n" +
+                    "    ON election.`StudentNum` = student.`StudentNum` SET Grade = ? \n" +
+                    "WHERE Semester = ?\n" +
+                    "  AND courseName = ? \n" +
+                    "  AND election.studentNum = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,score);
+            ps.setString(2,semester);
+            ps.setString(3,courseName);
+            ps.setString(4,stuNum);
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     //    教师端密码修改

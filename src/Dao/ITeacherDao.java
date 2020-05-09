@@ -21,8 +21,11 @@ public interface ITeacherDao {
     //获取数据库中教师的课程信息
     Course[] getCourseInfo(String num, String semester);
 
-    //获取数据库中教师所讲课程的成绩信息
+    //获取数据库中教师所讲课程的学生成绩信息
     Grade[]  getGradeInfo(String num,String semester,int pageNum);
+
+    //修改数据库中教师所讲授课程的学生成绩信息
+    int modifyGradeInfo(String semester,String courseName,String stuNum,String score);
 
     //修改数据库中教师的密码
     int modifyPassword(String num, String password, String answer);

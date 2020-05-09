@@ -44,6 +44,11 @@ public class TeacherServiceImpl implements ITeacherService {
     }
 
     @Override
+    public int modifyTeacherGradeInfo(String semester, String courseName, String stuNum, String score) {
+        return dao.modifyGradeInfo(semester,courseName,stuNum,score);
+    }
+
+    @Override
     public int modifyTeacherPassword(String num, String password, String answer) {
         return dao.modifyPassword(num, password, answer);
     }

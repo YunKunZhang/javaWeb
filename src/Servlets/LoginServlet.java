@@ -67,7 +67,6 @@ public class LoginServlet extends HttpServlet {
         String logout = req.getParameter("logout");
 
         HttpSession session = req.getSession(false);
-        Object login = session.getAttribute("login");
 
         if (logout == null || session == null) {
             doPost(req, resp);

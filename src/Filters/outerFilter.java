@@ -14,9 +14,9 @@ public class outerFilter implements javax.servlet.Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpSession session = request.getSession(false);
         HttpServletResponse response = (HttpServletResponse) resp;
-        Object login = session.getAttribute("login");
 
-        if (session == null || login == null || "false".equals(login)) {
+
+        if (session == null || !"true".equals(session.getAttribute("login"))) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }

@@ -1,9 +1,6 @@
 package Servlets;
 
-import Service.IStudentService;
-import Service.ITeacherService;
-import Service.StudentServiceImpl;
-import Service.TeacherServiceImpl;
+import Service.*;
 import beans.Course;
 import utils.JsonUtils;
 
@@ -35,12 +32,14 @@ public class ChooseSemesterServlet extends HttpServlet {
 
         String identity = (String) session.getAttribute("identity");
         //根据用户身份判断是获取账号还是姓名
-        String num = (String)session.getAttribute("num");
+        String num = (String) session.getAttribute("num");
 
-        Object[] course;
+        Object[] obj;
+        Integer amount;
         if (identity != null && num != null) {
+            amount = "administrator".equals(identity) ? gainAmount(semester) : null;
             //选择不同学期的课程、成绩信息
-            course = chooseSemester(identity, info, num, semester);
+            obj = chooseSemester(identity, info, num, semester);
         } else {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
@@ -50,9 +49,12 @@ public class ChooseSemesterServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         //调用工具类的方法，将课程信息封装为json数组
-        String stringify = JsonUtils.stringify(course);
+        String stringify = JsonUtils.stringify(obj);
         //创建标准输出流对象
         PrintWriter writer = response.getWriter();
+        if ("administrator".equals(identity)) {
+            writer.print(amount);
+        }
         writer.print(stringify.equals("[]") ? 0 : stringify);
         writer.close();
     }
@@ -60,6 +62,13 @@ public class ChooseSemesterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
+    }
+
+    protected int gainAmount(String semester) {//管理员判断成绩信息是否为空
+        //创建Service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        //调用getAdministratorGradeAmount()方法获取成绩总数
+        return service.getAdministratorGradeAmount(semester);
     }
 
     protected Object[] chooseSemester(String identity, String info, String num, String semester) {
@@ -82,10 +91,13 @@ public class ChooseSemesterServlet extends HttpServlet {
                 return service.getTeacherCourseInfo(num, semester);
             } else if ("grade".equals(info)) {
                 //3.调用Service对象的getTeacherGradeInfo()方法获取信息
-                return service.getTeacherGradeInfo(num,semester,1);
+                return service.getTeacherGradeInfo(num, semester, 1);
             }
         } else if ("administrator".equals(identity)) {
-
+            //创建service对象
+            IAdministratorService service = new AdministratorServiceImpl();
+            //调用service对象的getAdministratorGradeInfo()方法获取信息
+            return service.getAdministratorGradeInfo(semester, 1);
         }
         return null;
     }

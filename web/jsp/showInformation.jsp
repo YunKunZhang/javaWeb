@@ -177,15 +177,11 @@
                             <div class="input-group">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
-                                            data-toggle="dropdown">
+                                            data-toggle="dropdown" id="majorButtno">
                                         专业
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" id="profession">
-                                        <!--                                    <li><a href="javascript:;">专业1</a></li>-->
-                                        <!--                                    <li><a href="javascript:;">专业2</a></li>-->
-                                        <!--                                    <li><a href="javascript:;">专业3</a></li>-->
-                                        <!--                                    <li><a href="javascript:;">专业4</a></li>-->
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input type="text" id="major" name="major" class="form-control" autocomplete="off"
@@ -243,13 +239,8 @@
         //为院系按钮添加鼠标监听
         $('#department a').click(function () {
             $('#dep').val($(this).text());
-        });
-        </c:if>
-
-        <c:if test="${identity=='student'}">
-        //为专业按钮添加鼠标监听
-        $('#profession a').click(function () {
-            $('#major').val($(this).text());
+            $('#major').val("");
+            ajaxMajor($('#dep').val());
         });
         </c:if>
 
@@ -277,7 +268,7 @@
         //将修改表格中的数据填入表格中
         function updateInfo() {
             $('#stuName').html($('#name').val());
-            $('#male-person').attr("checked", "checked") ? $('#stuSex').html("男") : $('#stuSex').html("女");
+            $('#stuSex').html($("input[name='sex']:checked").val());
             <c:if test="${identity!='administrator'}">
             $('#stuDep').html($('#dep').val());
             </c:if>
@@ -338,6 +329,35 @@
                 },
                 error: function () {
                     alert("错误");
+                }
+            });
+        }
+
+        //发送ajax请求获取专业信息
+        function ajaxMajor(department) {
+            $.ajax({
+                type: "GET",
+                url: "management",
+                async: true,
+                data: {"department": department},
+                success: function (result) {
+                    if (result == 0) {
+                        alert("没有获取到相应的专业信息");
+                    } else {
+                        //分离请求中的json数据
+                        result = JSON.parse(result);
+                        $('#profession').children().remove();
+                        for (let i = 0; i < result.length; i++) {
+                            $('#profession').append("<li><a href='javascript:;'>" + result[i] + "</a></li>");
+                            //为专业按钮添加鼠标监听
+                            $('#profession a').click(function () {
+                                $('#major').val($(this).text());
+                            });
+                        }
+                    }
+                },
+                error: function () {
+                    alert("请求失败，请稍后再试");
                 }
             });
         }

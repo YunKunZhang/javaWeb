@@ -57,6 +57,7 @@ public class ChangeServlet extends HttpServlet {
                 exist = service.modifyAdministratorPassword(num, password, answer);
             } else if (newAnswer != null) {
                 //3.调用Service对象的modifyAdministratorAnswer()方法
+                exist = service.modifyAdministratorAnswer(num, answer, newAnswer);
             }
         }
 

@@ -173,33 +173,20 @@ public class StudentDaoImpl implements IStudentDao {
                 sql = "SELECT count(*) FROM vi_querycourse WHERE StudentNum=? AND CourseAllowed>CoursePeople";
             } else {
                 sql = "SELECT count(*) FROM vi_querycourse WHERE StudentNum=? AND ";
-                if ("精确".equals(condition2)) {
-                    if ("序号".equals(condition1)) {
-                        sql = sql.concat("num=?");
-                    } else if ("课程".equals(condition1)) {
-                        sql = sql.concat("CourseName=?");
-                    } else {
-                        sql = sql.concat("varietyName=?");
-                    }
-                } else if ("模糊".equals(condition2)) {
-                    if ("序号".equals(condition1)) {
-                        sql = sql.concat("num like ?");
-                    } else if ("课程".equals(condition1)) {
-                        sql = sql.concat("CourseName like ?");
-                    } else {
-                        sql = sql.concat("varietyName like ?");
-                    }
+
+                if ("序号".equals(condition1)) {
+                    sql = "精确".equals(condition2) ? sql.concat("num=?") : sql.concat("num like ?");
+                } else if ("课程".equals(condition1)) {
+                    sql = "精确".equals(condition2) ? sql.concat("CourseName=?") : sql.concat("CourseName like ?");
+                } else {
+                    sql = "精确".equals(condition2) ? sql.concat("varietyName=?") : sql.concat("varietyName like ?");
                 }
             }
 
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
             if (condition2 != null && input != null) {
-                if ("精确".equals(condition1)) {
-                    ps.setString(2, input);
-                } else {
-                    ps.setString(2, "%" + input + "%");
-                }
+                ps.setString(2, "精确".equals(condition1) ? input : "%" + input + "%");
             }
 
             rs = ps.executeQuery();
@@ -207,7 +194,8 @@ public class StudentDaoImpl implements IStudentDao {
             if (rs.next()) {
                 return rs.getInt(1);
             }
-        } catch (SQLException e) {
+        } catch (
+                SQLException e) {
             e.printStackTrace();
         }
         return 0;
@@ -224,8 +212,8 @@ public class StudentDaoImpl implements IStudentDao {
             String sql = "CALL getOptional(?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
-            ps.setInt(2, (pageNum - 1) * 15);
-            ps.setInt(3, pageNum * 15);
+            ps.setInt(2, (pageNum - 1) * 14);
+            ps.setInt(3, pageNum * 14);
             rs = ps.executeQuery();
 
             rs.last();
@@ -270,23 +258,15 @@ public class StudentDaoImpl implements IStudentDao {
                 sql = "SELECT *,(SELECT COUNT(*) FROM course INNER JOIN election ON course.`CourseNum` = election.`CourseNum` WHERE election.`StudentNum`=? AND election.`CourseNum` =vi_querycourse.`num`) AS STATUS FROM vi_querycourse WHERE StudentNum=? AND CourseAllowed>CoursePeople limit ?,?";
             } else {
                 sql = "SELECT *,(SELECT COUNT(*) FROM course INNER JOIN election ON course.`CourseNum` = election.`CourseNum` WHERE election.`StudentNum`=? AND election.`CourseNum` =vi_querycourse.`num`) AS STATUS  FROM vi_querycourse WHERE StudentNum=? AND ";
-                if ("精确".equals(condition2)) {
-                    if ("序号".equals(condition1)) {
-                        sql = sql.concat("num=? limit ?,?");
-                    } else if ("课程".equals(condition1)) {
-                        sql = sql.concat("CourseName=? limit ?,?");
-                    } else {
-                        sql = sql.concat("varietyName=? limit ?,?");
-                    }
-                } else if ("模糊".equals(condition2)) {
-                    if ("序号".equals(condition1)) {
-                        sql = sql.concat("num like ? limit ?,?");
-                    } else if ("课程".equals(condition1)) {
-                        sql = sql.concat("CourseName like ? limit ?,?");
-                    } else {
-                        sql = sql.concat("varietyName like ? limit ?,?");
-                    }
+
+                if ("序号".equals(condition1)) {
+                    sql = "精确".equals(condition2) ? sql.concat("num=?") : sql.concat("num like ? limit ?,?");
+                } else if ("课程".equals(condition1)) {
+                    sql = "精确".equals(condition2) ? sql.concat("CourseName=?") : sql.concat("CourseName like ? limit ?,?");
+                } else {
+                    sql = "精确".equals(condition2) ? sql.concat("varietyName=?") : sql.concat("varietyName like ? limit ?,?");
                 }
+
             }
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
@@ -296,12 +276,12 @@ public class StudentDaoImpl implements IStudentDao {
                     ps.setString(3, input);
                 } else {
                     ps.setString(3, "%" + input + "%");
+                    ps.setInt(4, (pageNum - 1) * 14);
+                    ps.setInt(5, pageNum * 14);
                 }
-                ps.setInt(4, (pageNum - 1) * 15);
-                ps.setInt(5, pageNum * 15);
             } else {
-                ps.setInt(3, (pageNum - 1) * 15);
-                ps.setInt(4, pageNum * 15);
+                ps.setInt(3, (pageNum - 1) * 14);
+                ps.setInt(4, pageNum * 14);
             }
             rs = ps.executeQuery();
 
@@ -405,7 +385,7 @@ public class StudentDaoImpl implements IStudentDao {
         int index = 0;
         try {
             conn = JDBCUtils.getConnection();
-            String sql = "CALL getStudentScore(?,?);";
+            String sql = "CALL getStudentScore(?,?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, num);
             ps.setString(2, getSemester(semester));

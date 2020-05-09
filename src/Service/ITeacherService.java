@@ -21,8 +21,11 @@ public interface ITeacherService {
     //查看教师端用户所教授课程信息
     Course[]  getTeacherCourseInfo(String num,String semester);
 
-    //查看教师端用户所教授课程的成绩信息
+    //查看教师端用户所教授课程的学生成绩信息
     Grade[]  getTeacherGradeInfo(String num,String semester,int pageNum);
+
+    //修改教师端用户所教授课程的学生成绩信息
+    int modifyTeacherGradeInfo(String semester,String courseName,String stuNum,String score);
 
     //修改教师端用户密码
     int modifyTeacherPassword(String num, String password, String answer);

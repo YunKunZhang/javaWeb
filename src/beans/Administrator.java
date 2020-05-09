@@ -45,7 +45,7 @@ public class Administrator {
     }
 
     public void setIdentity(String identity) {
-        this.identity = identity;
+        this.identity = "0".equals(identity)?"普通管理员":"超级管理员";
     }
 
     public String getBirthday() {
