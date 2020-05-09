@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-           version="2.5">
+         version="2.5">
 
     //配置标签库
     <jsp-config>
@@ -25,7 +25,9 @@
         </taglib>
     </jsp-config>
 
-    <session-config><session-timeout>10</session-timeout></session-config>
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
 
     //设置欢迎界面
     <welcome-file-list>
@@ -66,10 +68,10 @@
     </servlet-mapping>
 
     //设置过滤器防止用户直接访问内部资源
-   <filter>
-       <filter-name>innerFilter</filter-name>
-       <filter-class>Filters.innerFilter</filter-class>
-   </filter>
+    <filter>
+        <filter-name>innerFilter</filter-name>
+        <filter-class>Filters.innerFilter</filter-class>
+    </filter>
 
     <filter-mapping>
         <filter-name>innerFilter</filter-name>
@@ -92,7 +94,7 @@
         <servlet-name>choosePageServlet</servlet-name>
         <servlet-class>Servlets.ChoosePageServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>choosePageServlet</servlet-name>
         <url-pattern>/choose</url-pattern>
@@ -103,7 +105,7 @@
         <servlet-name>AlertInfoServlet</servlet-name>
         <servlet-class>Servlets.AlertIfoServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>AlertInfoServlet</servlet-name>
         <url-pattern>/alertInfo</url-pattern>
@@ -125,7 +127,7 @@
         <servlet-name>CoursePagingServlet</servlet-name>
         <servlet-class>Servlets.CoursePagingServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>CoursePagingServlet</servlet-name>
         <url-pattern>/paging</url-pattern>
@@ -136,7 +138,7 @@
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>Servlets.RegisterServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
@@ -147,9 +149,31 @@
         <servlet-name>QueryServlet</servlet-name>
         <servlet-class>Servlets.QueryServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>QueryServlet</servlet-name>
         <url-pattern>/query</url-pattern>
+    </servlet-mapping>
+
+    //用于处理修改学生成绩的请求
+    <servlet>
+        <servlet-name>ScoreServlet</servlet-name>
+        <servlet-class>Servlets.ScoreServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ScoreServlet</servlet-name>
+        <url-pattern>/score</url-pattern>
+    </servlet-mapping>
+
+    //用于处理人员管理的请求
+    <servlet>
+        <servlet-name>InformationManagementServlet</servlet-name>
+        <servlet-class>Servlets.InformationManagementServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>InformationManagementServlet</servlet-name>
+        <url-pattern>/management</url-pattern>
     </servlet-mapping>
 </web-app>
