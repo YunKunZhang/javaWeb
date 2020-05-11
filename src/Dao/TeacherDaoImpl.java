@@ -226,12 +226,13 @@ public class TeacherDaoImpl implements ITeacherDao {
                     "    ON election.`StudentNum` = student.`StudentNum` SET Grade = ? \n" +
                     "WHERE Semester = ?\n" +
                     "  AND courseName = ? \n" +
-                    "  AND election.studentNum = ?";
+                    "  AND election.studentNum = ?" +
+                    "  AND control.`IfInputGrade`=1";
             ps = conn.prepareStatement(sql);
-            ps.setString(1,score);
-            ps.setString(2,semester);
-            ps.setString(3,courseName);
-            ps.setString(4,stuNum);
+            ps.setString(1, score);
+            ps.setString(2, semester);
+            ps.setString(3, courseName);
+            ps.setString(4, stuNum);
 
             return ps.executeUpdate();
         } catch (SQLException e) {

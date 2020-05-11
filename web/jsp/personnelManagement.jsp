@@ -57,7 +57,10 @@
             </c:if>
             <th id="department">学院</th>
             <th>出生日期</th>
-            <th>联系电话</th>
+            <c:if test="${identity=='student'}">
+                <th id="enterDate">入学日期</th>
+            </c:if>
+            <th id="phoneTh">联系电话</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -75,6 +78,9 @@
                 </c:if>
                 <td><c:out value="${temp.department}"/></td>
                 <td><c:out value="${temp.birthday}"/></td>
+                <c:if test="${identity=='student'}">
+                    <td><c:out value="${temp.enterDate}"/></td>
+                </c:if>
                 <td><c:out value="${temp.phone}"/></td>
                 <td><a href='#' class="remove">删除</a>
                     <a href='#' data-toggle="modal" data-target="#myModal"
@@ -96,13 +102,13 @@
             页
         </div>
         <div class="ui_frt">
-            <!--    如果是第一页，则只显示下一页、尾页 -->
+            <!-- 如果是第一页，则只显示下一页、尾页 -->
 
             <input type="button" value="首页" class="ui_input_btn01" id="homePage"/>
             <input type="button" value="上一页" class="ui_input_btn01" id="lastPage"/>
             <input type="button" value="下一页" class="ui_input_btn01" id="nextPage"/>
             <input type="button" value="尾页" class="ui_input_btn01" id="trailerPage"/>
-            <!--     如果是最后一页，则只显示首页、上一页 -->
+            <!-- 如果是最后一页，则只显示首页、上一页 -->
 
             转到第<input type="text" id="jumpNumTxt" class="ui_input_txt01" autocomplete="off"/>页
             <input type="button" class="ui_input_btn01" id="jump" value="跳转"/>
@@ -190,11 +196,11 @@
                             <div class="input-group">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
-                                            data-toggle="dropdown">
+                                            data-toggle="dropdown" id="rankButton">
                                         职称
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" id="rank">
+                                    <ul class="dropdown-menu" id="rankSelect">
                                         <li><a href="javascript:;">助教</a></li>
                                         <li><a href="javascript:;">讲师</a></li>
                                         <li><a href="javascript:;">副教授</a></li>
@@ -209,17 +215,17 @@
                         <div class="form-group">
                             <lebel>出生日期</lebel>
                             <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd">
-                                <input type="text" id="birthday" class="form-control" name="birthday"
+                                <input type="text" id="birthdayInput" class="form-control" name="birthday"
                                        readonly="readonly">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                                 <span class="input-group-addon"><span
                                         class="glyphicon glyphicon-calendar"></span></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="none3">
                             <lebel>入学日期</lebel>
                             <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd">
-                                <input type="text" id="enterDay" class="form-control" name="enterDay"
+                                <input type="text" id="enterDayInput" class="form-control" name="enterDay"
                                        readonly="readonly">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                                 <span class="input-group-addon"><span
@@ -261,6 +267,7 @@
         let TextInit;//表单内容
         let nowPage = 1;//当前页面
         let ifQuery = false;//是否查询过了
+        let ifModify = false;
         let condition1;//查询主条件
         let condition2;//查询附加条件
         let condition3;//输入框内容
@@ -284,7 +291,87 @@
             }
         });
 
-        //    条件查询区域
+        //为不同的跳转按钮添加事件监听
+        //"首页"按钮
+        $('#homePage').click(function () {
+            if (nowPage == 1 || optionSum <= 15) {
+                return;
+            } else {
+                if (ifQuery) {
+                    ajaxQuery(identity, "query", condition1, condition2, condition3, 1);
+                } else {
+                    ajaxPerson(identity, "selectAll", 1);
+                }
+                setPage(1);
+            }
+        });
+
+        //"上一页"按钮
+        $('#lastPage').click(function () {
+            if (nowPage == 1 || optionSum <= 15) {
+                return;
+            } else {
+                if (ifQuery) {
+                    ajaxQuery(identity, "query", condition1, condition2, condition3, nowPage - 1);
+                } else {
+                    ajaxPerson(identity, "selectAll", nowPage - 1);
+                }
+                setPage(nowPage - 1);
+            }
+        });
+
+        //"下一页"按钮
+        $('#nextPage').click(function () {
+            if (nowPage == optionSum || optionSum < 15) {
+                return;
+            } else {
+                if (ifQuery) {
+                    ajaxQuery(identity, "query", condition1, condition2, condition3, nowPage + 1);
+                } else {
+                    ajaxPerson(identity, "selectAll", nowPage + 1);
+                }
+                setPage(nowPage + 1);
+            }
+        });
+
+        //"尾页"按钮
+        $('#trailerPage').click(function () {
+            if (nowPage == optionSum || optionSum < 15) {
+                return;
+            } else {
+                if (ifQuery) {
+                    ajaxQuery(identity, "query", condition1, condition2, condition3, Math.ceil(optionSum / 15));
+                } else {
+                    ajaxPerson(identity, "selectAll", Math.ceil(optionSum / 15));
+                }
+                setPage(Math.ceil(optionSum / 15));
+            }
+        });
+
+        //"跳转到 页"输入框
+        $('#jump').click(function () {
+            let input = $('#jumpNumTxt').val();
+            if (input < 1 || input > Math.ceil(optionSum / 15)) {
+                alert("输入的数据无效，请重新输入");
+                $('#jumpNumTxt').val("");
+            } else if (input == nowPage) {
+                return;
+            } else {
+                if (ifQuery) {
+                    ajaxQuery(identity, "query", condition1, condition2, condition3, input);
+                } else {
+                    ajaxPerson(identity, "selectAll", input);
+                }
+                setPage(input);
+            }
+        });
+
+        //将设置当前页码功能封装为函数
+        function setPage(pageNum) {
+            $('#pageNow').html(pageNum);
+        }
+
+        // 条件查询区域
 
         //为“查询”按钮添加事件监听
         $('#query').click(function () {
@@ -320,7 +407,9 @@
             if ("student" == $("#choose").val()) {
                 $('#none1').css("display", "block");
                 $('#none2').css("display", "none");
+                $('#none3').css("display", "block");
             } else {
+                $('#none3').css("display", "none");
                 $('#none2').css("display", "block");
                 $('#none1').css("display", "none");
             }
@@ -329,23 +418,30 @@
         //拟态框消失时重置表单
         $('#myModal').on('hidden.bs.modal', function () {
             $('#form')[0].reset();
+            ifModify = false;
         });
 
         //为院系按钮添加鼠标监听
         $('#departmentSelect a').click(function () {
             $('#dep').val($(this).text());
+            ajaxMajor($('#dep').val());
         });
 
-        //获取专业信息
-        $('#majorButton').click(function () {
-            ajaxMajor($('#dep').val());
+        //为职称按钮添加鼠标监听
+        $('#rankSelect a').click(function () {
+            $('#rankInput').val($(this).text());
         });
 
         //为“提交”按钮添加事件监听器
         $('#submit').click(function () {
             let Text = $('#form').serialize();
-            if (Text == TextInit) {
+            if (Text == TextInit && ifModify == false) {
                 alert("请填写内容");
+            } else if (ifModify == true && Text == TextInit) {
+                alert("修改内容");
+            } else if (ifModify) {
+                verify(Text);
+
             } else {
                 verify(Text);
             }
@@ -357,7 +453,7 @@
             let flag = true;
             for (let i = 0; i < inputAll.length; i++) {//对表单内容进行验证（不能为空、符合正则表达式）
                 let input = inputAll[i].split('=');
-                if (input[1] == "" && (identity == 'student' && i != 5) || identity == 'teacher' && i != 4) {
+                if (input[1] == "" && (identity == 'student' && i != 5) || (identity == 'teacher' && i != 4 && i != 7)) {
                     alert("信息不能为空");
                     flag = false;
                     return;
@@ -390,14 +486,31 @@
                     }
                 }
             }
-            if (flag) {
+            if (flag && ifModify == false) {
                 ajaxAddPerson(identity, "addPerson", decodeURIComponent(information));
+            } else {
+                ajaxModifyPerson(identity, "modifyPerson", information);
             }
         }
 
         //为“删除”按钮添加事件监听
         $('.remove').click(function () {
             ajaxRemove(identity, "remove", $(this).parent().siblings().eq(0).text());
+        });
+
+        //为“操作”按钮添加事件监听
+        $('.edit').click(function () {
+            ifModify = true;
+            if ("student" == $("#choose").val()) {
+                $('#none1').css("display", "block");
+                $('#none2').css("display", "none");
+                $('#none3').css("display", "block");
+            } else {
+                $('#none3').css("display", "none");
+                $('#none2').css("display", "block");
+                $('#none1').css("display", "none");
+            }
+            addInfoToModal($(this));
         });
 
         //发送ajax请求获取不同客户端用户信息
@@ -499,6 +612,8 @@
                 data: {"department": department},
                 success: function (result) {
                     if (result == 0) {
+                        $('#profession').children().remove();
+                        $('#majorInput').val("");
                         alert("没有获取到相应的专业信息");
                     } else {
                         //分离请求中的json数据
@@ -530,10 +645,33 @@
                     result = result.substring(0, result.indexOf("["));
                     if (result == 1) {
                         alert("添加成功");
-                        $('#myModal').modal('hide');
                         ajaxPerson(identity, "selectAll", 1);
+                        $('#myModal').modal('hide');
                     } else {
                         alert("添加失败，请稍后再试");
+                    }
+                },
+                error: function () {
+                    alert("请求异常，请稍后再试");
+                }
+            });
+        }
+
+        //发送ajax请求向数据库中修改教师（学生）信息
+        function ajaxModifyPerson(type, operation, information) {
+            $.ajax({
+                type: "POST",
+                url: "management",
+                async: true,
+                data: {"type": type, "operation": operation, "information": decodeURIComponent(information)},
+                success: function (result) {
+                    result = result.substring(0, result.indexOf("["));
+                    if (result == 1) {
+                        alert("修改成功");
+                        ajaxPerson(identity, "selectAll", 1);
+                        $('#myModal').modal('hide');
+                    } else {
+                        alert("修改失败，请稍后再试");
                     }
                 },
                 error: function () {
@@ -549,7 +687,9 @@
                 if (!ifQuery) {
                     $('#major').remove();
                     $('#rank').remove();
+                    $('#enterDate').remove();
                     $('#department').before(' <th id="major">专业</th>');
+                    $('#phoneTh').before(' <th id="enterDate">入学日期</th>');
                 }
                 for (let i = 0; i < result.length; i++) {
                     let line = "<tr>" +
@@ -559,20 +699,35 @@
                         "<td>" + result[i].major + "</td>" +
                         "<td>" + result[i].department + "</td>" +
                         "<td>" + result[i].birthday + "</td>" +
+                        "<td>" + result[i].enterDate + "</td>" +
                         "<td>" + result[i].phone + "</td>" +
                         "<td><a href='#' class='remove'>删除</a>\n" +
-                        "                    <a href='#' data-toggle=\"modal\" data-target=\"#myModal\"\n" +
-                        "                       class='edit'>操作</a></td>" +
+                        " <a href='#' data-toggle=\"modal\" data-target=\"#myModal\"\n" +
+                        " class='edit'>操作</a></td>" +
                         "</tr>";
+                    $('table>tbody').append(line);
                     $('.remove').click(function () {
                         ajaxRemove(identity, "remove", $(this).parent().siblings().eq(0).text());
                     });
-                    $('table>tbody').append(line);
+                    $('.edit').click(function () {
+                        ifModify = true;
+                        if ("student" == $("#choose").val()) {
+                            $('#none1').css("display", "block");
+                            $('#none2').css("display", "none");
+                            $('#none3').css("display", "block");
+                        } else {
+                            $('#none3').css("display", "none");
+                            $('#none2').css("display", "block");
+                            $('#none1').css("display", "none");
+                        }
+                        addInfoToModal($(this));
+                    });
                 }
             } else {
                 if (!ifQuery) {
                     $('#major').remove();
                     $('#rank').remove();
+                    $('#enterDate').remove();
                     $('#department').before(' <th id="rank">职称</th>');
                 }
                 for (let i = 0; i < result.length; i++) {
@@ -585,25 +740,48 @@
                         "<td>" + result[i].birthday + "</td>" +
                         "<td>" + result[i].phone + "</td>" +
                         "<td><a href='#' class='remove'>删除</a>\n" +
-                        "                    <a href='#' data-toggle=\"modal\" data-target=\"#myModal\"\n" +
-                        "                       class='edit'>操作</a></td>" +
+                        " <a href='#' data-toggle=\"modal\" data-target=\"#myModal\"\n" +
+                        " class='edit'>操作</a></td>" +
                         "</tr>";
+                    $('table>tbody').append(line);
                     $('.remove').click(function () {
                         ajaxRemove(identity, "remove", $(this).parent().siblings().eq(0).text());
                     });
-                    $('table>tbody').append(line);
+                    $('.edit').click(function () {
+                        ifModify = true;
+                        if ("student" == $("#choose").val()) {
+                            $('#none1').css("display", "block");
+                            $('#none2').css("display", "none");
+                            $('#none3').css("display", "block");
+                        } else {
+                            $('#none3').css("display", "none");
+                            $('#none2').css("display", "block");
+                            $('#none1').css("display", "none");
+                        }
+                        addInfoToModal($(this));
+                    });
                 }
             }
         }
 
-        //为“全选”按钮添加事件监听器
-        $('#all').click(function () {
-            if ($(this).prop('checked')) {
-                $('.selectAll').attr("checked", "checked");
+        //将表格中数据加入到拟态框
+        function addInfoToModal(node) {
+            $('#account').val(node.parent().siblings().eq(0).text());
+            $('#name').val(node.parent().siblings().eq(1).text());
+            node.parent().siblings().eq(2).text() == "男" ? $('#male-person').attr("checked", "checked") : $('#female-person').attr("checked", "checked");
+            $('#dep').val(node.parent().siblings().eq(4).text());
+            if ("student" == identity) {
+                $('#majorInput').val(node.parent().siblings().eq(3).text());
+                $('#birthdayInput').val(node.parent().siblings().eq(5).text());
+                $('#enterDayInput').val(node.parent().siblings().eq(6).text());
+                $('#phone').val(node.parent().siblings().eq(7).text());
             } else {
-                $('.selectAll').removeAttr("checked");
+                $('#rankInput').val(node.parent().siblings().eq(3).text());
+                $('#birthdayInput').val(node.parent().siblings().eq(5).text());
+                $('#phone').val(node.parent().siblings().eq(6).text());
             }
-        });
+            TextInit = $('#form').serialize();
+        }
 
     });
 </script>

@@ -9,6 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <c:set value="${pageContext.request.session.getAttribute('identity')}" var="identity"></c:set>
+<c:set value="${pageContext.request.getAttribute('status')}" var="status"></c:set>
 <head>
     <title>选课信息</title>
     <link href="com/css/common_style.css" rel="stylesheet" type="text/css">
@@ -90,6 +91,14 @@
                             <input type="text" id="import" class="ui_input_txt02" autocomplete="off"/>
                             <button class="ui_input_btn01" id="query">查询</button>
                             <button class="ui_input_btn01" id="recovery">重置</button>
+                            <button class="ui_input_btn01" id="ifChoose" style="float: right">
+                                <c:if test="${status=='1'}">
+                                    正选
+                                </c:if>
+                                <c:if test="${status!='1'}">
+                                    非正选
+                                </c:if>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -110,8 +119,8 @@
                             <th>人数</th>
                             <c:if test="${identity=='student'}">
                                 <th>状态</th>
+                                <th>操作</th>
                             </c:if>
-                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -127,7 +136,10 @@
                                     <td><c:out value="${temp.teachingMethod}"/></td>
                                     <td><c:out value="${temp.evaluationMode}"/></td>
                                     <td><c:out value="${temp.people}"/></td>
-                                    <td><a href='#' data-toggle='modal' data-target='#myModal' class='edit'>操作</a></td>
+                                    <c:if test="${identity=='student'}">
+                                        <td><a href='#' data-toggle='modal' data-target='#myModal' class='edit'>操作</a>
+                                        </td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                         </c:if>
@@ -386,8 +398,8 @@
                     "<td>" + result[i].people + "</td>" +
                     <c:if test="${identity=='student'}">
                     "<td>" + result[i].status + "</td>" +
-                    </c:if>
                     "<td> <a href='#' data-toggle='modal' data-target='#myModal' class='edit'>操作</a></td>" +
+                    </c:if>
                     "</tr>";
                 $('#elect>tbody').append(line);
 
@@ -561,6 +573,38 @@
             });
         }
 
+        //为“正选”按钮添加事件监听器
+        $('#ifChoose').click(function () {
+            let outcome = window.confirm("是否调整正选状态");
+            if (outcome) {
+                alertChoose($('#ifChoose').html());
+            }
+        });
+
+        //发送ajax请求修改可选状态
+        function alertChoose(nowStatus) {
+            $.ajax({
+                type: "GET",
+                url: "alertInfo",
+                async: true,
+                data: {"alertStatus": "choose", "nowStatus": nowStatus},
+                success: function (result) {
+                    if (result == 1) {
+                        if ($('#ifChoose').html() == "正选") {
+                            $('#ifChoose').html("非正选");
+                        } else {
+                            $('#ifChoose').html("正选");
+                        }
+                        alert("修改成功");
+                    } else {
+                        alert("后台异常，请稍后重试");
+                    }
+                },
+                error: function () {
+                    alert("请求异常，请稍后重试");
+                }
+            });
+        }
     });
     </c:if>
 </script>

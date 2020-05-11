@@ -1,6 +1,7 @@
 package Servlets;
 
 import Service.*;
+import beans.Administrator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,6 +70,22 @@ public class AlertIfoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
+        req.setCharacterEncoding("UTF-8");
+
+        //获取请求中的参数
+        String control = req.getParameter("alertStatus");
+        String nowStatus = req.getParameter("nowStatus");
+        int outcome = 0;
+        if (control == null || nowStatus == null) {
+            return;
+        } else {
+            //创建Service对象
+            IAdministratorService service = new AdministratorServiceImpl();
+            outcome = service.control(control, nowStatus);
+        }
+        //创建标准输出流
+        PrintWriter writer = resp.getWriter();
+        writer.print(outcome);
+        writer.close();
     }
 }

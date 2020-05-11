@@ -141,6 +141,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
             rs.beforeFirst();
             while (rs.next()) {
                 Course course = new Course();
+                course.setNum(rs.getString("CourseNum"));
                 course.setName(rs.getString("CourseName"));
                 course.setCredit(rs.getInt("CourseCredit"));
                 course.setPeriod(rs.getInt("Period"));
@@ -148,6 +149,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
                 course.setTeachingMethod(rs.getString("TeachingMethod"));
                 course.setEvaluationMode(rs.getString("EvaluationMode"));
                 course.setTeacherName(rs.getString("TeacherName"));
+                course.setAllowed(rs.getString("CourseAllowed"));
                 arr[index] = course;
                 index++;
             }
@@ -307,7 +309,9 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         try {
             conn = JDBCUtils.getConnection();
             String sql = "select count(*) from vi_allcourse where ";
-            if ("课程".equals(condition1)) {
+            if ("课程号".equals(condition1)) {
+                sql = "精确".equals(condition2) ? sql.concat("CourseNum=?") : sql.concat("CourseNum like ?");
+            } else if ("课程".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("CourseName=?") : sql.concat("CourseName like ?");
             } else if ("类别".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("varietyName=?") : sql.concat("varietyName like ?");
@@ -337,7 +341,9 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         try {
             conn = JDBCUtils.getConnection();
             String sql = "select * from vi_allcourse where ";
-            if ("课程".equals(condition1)) {
+            if ("课程号".equals(condition1)) {
+                sql = "精确".equals(condition2) ? sql.concat("CourseNum=?") : sql.concat("CourseNum like ? limit ?,?");
+            } else if ("课程".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("CourseName=?") : sql.concat("CourseName like ? limit ?,?");
             } else if ("类别".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("varietyName=?") : sql.concat("varietyName like ? limit ?,?");
@@ -358,6 +364,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
             rs.beforeFirst();
             while (rs.next()) {
                 Course course = new Course();
+                course.setNum(rs.getString("CourseNum"));
                 course.setName(rs.getString("CourseName"));
                 course.setCredit(rs.getInt("CourseCredit"));
                 course.setPeriod(rs.getInt("Period"));
@@ -650,6 +657,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
                     student.setMajor(rs.getString("MajorName"));
                     student.setDepartment(rs.getString("DepName"));
                     student.setBirthday(rs.getDate("StudentBirthday"));
+                    student.setEnterDate(rs.getDate("StudentEnterDate"));
                     student.setPhone(rs.getString("StudentPhone"));
                     arr[index] = student;
                     index++;
@@ -774,6 +782,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
                     student.setMajor(rs.getString("MajorName"));
                     student.setDepartment(rs.getString("DepName"));
                     student.setBirthday(rs.getDate("StudentBirthday"));
+                    student.setEnterDate(rs.getDate("StudentEnterDate"));
                     student.setPhone(rs.getString("StudentPhone"));
                     arr[index] = student;
                     index++;
@@ -877,6 +886,48 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         return -1;
     }
 
+    //    添加课程信息
+
+    @Override
+    public int addCourse(String[] information) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "insert into course values(?,?,?,?,(SELECT \n" +
+                    "  VarietyId \n" +
+                    "FROM\n" +
+                    "  coursevariety \n" +
+                    "WHERE VarietyName = ?),?,?,(SELECT \n" +
+                    "  TeacherNum \n" +
+                    "FROM\n" +
+                    "  teacher \n" +
+                    "WHERE teacher.`TeacherName` = ?),?,?,?,(SELECT \n" +
+                    "  majorNum \n" +
+                    "FROM\n" +
+                    "  major \n" +
+                    "WHERE major.`MajorName` =?))";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, information[0]);
+            ps.setString(2, information[1]);
+            ps.setInt(3, Integer.parseInt(information[2]));
+            ps.setInt(4, Integer.parseInt(information[3]));
+            ps.setString(5, information[4]);
+            ps.setString(6, information[7]);
+            ps.setString(7, information[8]);
+            ps.setString(8, information[9]);
+            ps.setString(9, information[9]);
+            ps.setInt(10, 0);
+            ps.setInt(11, Integer.parseInt(information[10]));
+            ps.setString(12, information[6]);
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return 0;
+    }
+
     //    删除教师（学生）用户信息
 
     @Override
@@ -901,7 +952,177 @@ public class AdministratorDaoImpl implements IAdministratorDao {
         return -1;
     }
 
-    //    查询专业
+    //    删除课程信息
+
+    @Override
+    public int removeCourseInfo(String num) {
+        boolean flag = ifSelectedCourse(num) > 0 ? true : false;
+        if (flag) {
+            try {
+                conn = JDBCUtils.getConnection();
+                String sql = "DELETE FROM course WHERE CourseNum=?";
+                ps = conn.prepareStatement(sql);
+
+                return ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                JDBCUtils.close2(conn, ps);
+            }
+        }
+        return -1;
+    }
+
+    //    查看要删除的课程是否被选了
+
+    @Override
+    public int ifSelectedCourse(String num) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "SELECT COUNT(*) FROM course WHERE CoursePeople=0 AND CourseNum=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, num);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return 0;
+    }
+
+    //    修改教师（学生）信息
+
+    @Override
+    public int modifyPersonInfo(String identity, String[] information) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql;
+            if ("student".equals(identity)) {
+                sql = "UPDATE \n" +
+                        "  student \n" +
+                        "SET\n" +
+                        "  StudentName = ?,\n" +
+                        "  StudentSex = ?,\n" +
+                        "  MajorNum = \n" +
+                        "  (SELECT \n" +
+                        "    majorNum \n" +
+                        "  FROM\n" +
+                        "    major \n" +
+                        "  WHERE majorName = ?),\n" +
+                        "  StudentBirthday = STR_TO_DATE(?, '%Y-%m-%d'),\n" +
+                        "  StudentEnterDate = STR_TO_DATE(?, '%Y-%m-%d'),\n" +
+                        "  StudentPhone = ? \n" +
+                        "WHERE StudentNum = ?";
+            } else {
+                sql = "UPDATE \n" +
+                        "  Teacher \n" +
+                        "SET\n" +
+                        "  TeacherName = ?,\n" +
+                        "  TeacherSex = ?,\n" +
+                        "  DepNum = \n" +
+                        "  (SELECT \n" +
+                        "    DepNum \n" +
+                        "  FROM\n" +
+                        "    department \n" +
+                        "  WHERE DepName = ?),\n" +
+                        "  TeacherRank = ?,\n" +
+                        "  TeacherBirthday = STR_TO_DATE(?, '%Y-%m-%d'),\n" +
+                        "  TeacherPhone = ? \n" +
+                        "WHERE TeacherNum = ?";
+            }
+            ps = conn.prepareStatement(sql);
+            if ("student".equals(identity)) {
+                ps.setString(1, information[1]);
+                ps.setString(2, information[2]);
+                ps.setString(3, information[4]);
+                ps.setString(4, information[6]);
+                ps.setString(5, information[7]);
+                ps.setString(6, information[8]);
+                ps.setString(7, information[0]);
+            } else {
+                ps.setString(1, information[1]);
+                ps.setString(2, information[2]);
+                ps.setString(3, information[3]);
+                ps.setString(4, information[5]);
+                ps.setString(5, information[6]);
+                ps.setString(6, information[8]);
+                ps.setString(7, information[0]);
+            }
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return -1;
+    }
+
+    //    修改课程信息
+
+    @Override
+    public int modifyCourseInfo(String[] information) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "UPDATE \n" +
+                    "  course \n" +
+                    "SET\n" +
+                    "  CourseNum = ?,\n" +
+                    "  CourseName = ?,\n" +
+                    "  CourseCredit = ?,\n" +
+                    "  Period = ?,\n" +
+                    "  Variety = \n" +
+                    "  (SELECT \n" +
+                    "    VarietyId \n" +
+                    "  FROM\n" +
+                    "    coursevariety \n" +
+                    "  WHERE coursevariety.`VarietyName` = ?),\n" +
+                    "  MajorNum = \n" +
+                    "  (SELECT \n" +
+                    "    MajorNum \n" +
+                    "  FROM\n" +
+                    "    major \n" +
+                    "  WHERE major.`MajorName` = ?),\n" +
+                    "  TeachingMethod = ?,\n" +
+                    "  EvaluationMode = ?,\n" +
+                    "  TeacherNum = \n" +
+                    "  (SELECT \n" +
+                    "    TeacherNum \n" +
+                    "  FROM\n" +
+                    "    teacher \n" +
+                    "  WHERE teacher.`TeacherName` = ?),\n" +
+                    "  TeacherName = ?,\n" +
+                    "  CourseAllowed=?\n" +
+                    "  WHERE CourseNum=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, information[0]);
+            ps.setString(2, information[1]);
+            ps.setInt(3, Integer.parseInt(information[2]));
+            ps.setInt(4, Integer.parseInt(information[3]));
+            ps.setString(5, information[4]);
+            ps.setString(6, information[6]);
+            ps.setString(7, information[7]);
+            ps.setString(8, information[8]);
+            ps.setString(9, information[9]);
+            ps.setString(10, information[9]);
+            ps.setInt(11, Integer.parseInt(information[10]));
+            ps.setString(12, information[0]);
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return -1;
+    }
+
+    //    根据学院查询专业
 
     @Override
     public String[] getMajor(String department) {
@@ -935,6 +1156,90 @@ public class AdministratorDaoImpl implements IAdministratorDao {
             JDBCUtils.close1(conn, ps, rs);
         }
         return null;
+    }
+
+    //    根据课程号查询专业、学院信息
+
+    @Override
+    public String[] queryMajorByCourseNum(String courseNum) {
+        String[] arr = new String[2];
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "SELECT \n" +
+                    "  DepName,\n" +
+                    "  MajorName \n" +
+                    "FROM\n" +
+                    "  course \n" +
+                    "  INNER JOIN major \n" +
+                    "    ON major.`MajorNum` = course.`MajorNum` \n" +
+                    "  INNER JOIN department \n" +
+                    "    ON department.`DepNum` = major.`DepNum` WHERE CourseNum=? ";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, courseNum);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                arr[0] = rs.getString("DepName");
+                arr[1] = rs.getString("MajorName");
+                return arr;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return null;
+    }
+
+    //    查询选课（成绩录入）控制
+
+    @Override
+    public int selectControl(String control) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql;
+            if ("choose".equals(control)) {
+                sql = "SELECT IfTakeCourse from control";
+            } else {
+                sql = "SELECT IfInputGrade from control";
+            }
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return -1;
+    }
+
+    //    选课（成绩录入）控制
+
+    @Override
+    public int control(String control, String nowStatus) {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql;
+            if ("choose".equals(control)) {
+                sql = "UPDATE control SET IfTakeCourse=?";
+            } else {
+                sql = "UPDATE control SET IfInputGrade=?";
+            }
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, "正选".equals(nowStatus) ? 0 : 1);
+
+            return ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close2(conn, ps);
+        }
+        return 0;
     }
 
     //    修改管理员信息

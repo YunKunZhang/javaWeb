@@ -60,11 +60,35 @@ public interface IAdministratorDao {
     //添加学生（教师）信息进入数据库
     int addPerson(String identity, String[] information);
 
+    //添加课程信息
+    int addCourse(String[] information);
+
     //删除数据库中符合条件的学生（教师）信息
     int removePersonInfo(String identity, String num);
 
+    //删除数据库中符合条件的课程信息
+    int removeCourseInfo(String num);
+
+    //根据条件查看符合条件的课程是否被选了（无人选择可以删除，反之无法删除）
+    int ifSelectedCourse(String num);
+
+    //修改数据库中符合条件的学生（教师）信息
+    int modifyPersonInfo(String identity, String[] information);
+
+    //修改数据库中符合条件的课程信息
+    int modifyCourseInfo(String[] information);
+
     //根据学院信息获取专业信息
     String[] getMajor(String department);
+
+    //根据课程号查询专业、学院信息
+    String[] queryMajorByCourseNum(String courseNum);
+
+    //查询成绩录入（选课）控制
+    int selectControl(String control);
+
+    //成绩录入（选课）控制
+    int control(String control, String nowStatus);
 
     //修改数据库中管理员的信息
     int modifyInfo(String[] info, String num);

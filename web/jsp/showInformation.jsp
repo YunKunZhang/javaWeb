@@ -177,7 +177,7 @@
                             <div class="input-group">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
-                                            data-toggle="dropdown" id="majorButtno">
+                                            data-toggle="dropdown" id="majorButtnon">
                                         专业
                                         <span class="caret"></span>
                                     </button>
@@ -239,7 +239,6 @@
         //为院系按钮添加鼠标监听
         $('#department a').click(function () {
             $('#dep').val($(this).text());
-            $('#major').val("");
             ajaxMajor($('#dep').val());
         });
         </c:if>
@@ -342,6 +341,8 @@
                 data: {"department": department},
                 success: function (result) {
                     if (result == 0) {
+                        $('#profession').children().remove();
+                        $('#major').val("");
                         alert("没有获取到相应的专业信息");
                     } else {
                         //分离请求中的json数据

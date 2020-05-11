@@ -49,6 +49,8 @@ public class ChoosePageServlet extends HttpServlet {
                 request.setAttribute("amount", amount != null ? amount : 0);
                 if ("personnelManagement.jsp".equals(name)) {
                     request.setAttribute("type", "student");
+                } else if ("chooseCourse.jsp".equals(name) || "gradeInformation.jsp".equals(name)) {
+                    request.setAttribute("status", gainStatus(name.substring(0, 6)));
                 }
             }
 
@@ -94,6 +96,12 @@ public class ChoosePageServlet extends HttpServlet {
         ITeacherService service = new TeacherServiceImpl();
         //调用service对象的getStudentNumber()方法获取选择教师课的学生总数
         return service.getStudentNumber(num, null);
+    }
+
+    protected int gainStatus(String control) {
+        IAdministratorService service = new AdministratorServiceImpl();
+        //调用service对象的getStudentNumber()方法获取选择教师课的学生总数
+        return service.selectControl(control);
     }
 
     protected Object chooseService(String identity, String pageName, String num) {//根据不同的身份、页面地址调用对象的相应方法

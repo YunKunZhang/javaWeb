@@ -21,12 +21,15 @@ public class InformationManagementServlet extends HttpServlet {
 
         //获取请求中的参数
         String department = req.getParameter("department");
+        String courseNum = req.getParameter("courseNum");
 
         String[] major = null;
-        if (department != null) {
-            //创建service对象
-            IAdministratorService service = new AdministratorServiceImpl();
+        //创建service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        if (department != null) {//根据学院查专业
             major = service.getMajor(department);
+        } else {//根据课程号查询专业名称及所属院系
+            major = service.queryMajorByCourseNum(courseNum);
         }
 
         resp.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -63,7 +66,7 @@ public class InformationManagementServlet extends HttpServlet {
             condition = req.getParameter("condition");
             extra = req.getParameter("extra");
             input = req.getParameter("input");
-        } else if ("addPerson".equals(operation)) {
+        } else if ("addPerson".equals(operation) || "modifyPerson".equals(operation) || "addCourse".equals(operation) || "modifyCourse".equals(operation)) {
             information = req.getParameter("information");
         }
 
@@ -79,14 +82,24 @@ public class InformationManagementServlet extends HttpServlet {
                 outcome = num > 0 ? selectOperation(identity, pageNum) : null;
             } else if ("remove".equals(operation)) {
                 num = removeOperation(identity, req.getParameter("num"));
-            } else if ("addPerson".equals(operation)) {
+            } else if ("addPerson".equals(operation) || "modifyPerson".equals(operation)) {
                 //对请求中的参数进行处理
                 String[] split = information.split("&");
                 for (int i = 0; i < split.length; i++) {
                     int tem = split[i].indexOf("=") + 1;
                     split[i] = split[i].substring(tem);
                 }
-                num = addOperation(identity, split);
+                num = "addPerson".equals(operation) ? addOperation(identity, split) : modifyOperation(identity, split);
+            } else if ("addCourse".equals(operation) || "modifyCourse".equals(operation)) {
+                //对请求中的参数进行处理
+                String[] split = information.split("&");
+                for (int i = 0; i < split.length; i++) {
+                    int tem = split[i].indexOf("=") + 1;
+                    split[i] = split[i].substring(tem);
+                }
+                num = "addCourse".equals(operation) ? addOperation(split) : modifyOperation(split);
+            } else if ("removeCourse".equals(operation)) {
+                num = removeOperation(req.getParameter("CourseNum"));
             }
         } else {
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
@@ -135,7 +148,7 @@ public class InformationManagementServlet extends HttpServlet {
         return service.getQueryPersonInfo(identity, condition, extra, input, Integer.parseInt(pageNum));
     }
 
-    protected int addOperation(String identity, String[] information) {
+    protected int addOperation(String identity, String[] information) {//添加个人信息
         //创建service对象
         IAdministratorService service = new AdministratorServiceImpl();
         return service.addPerson(identity, information);
@@ -145,5 +158,29 @@ public class InformationManagementServlet extends HttpServlet {
         //创建service对象
         IAdministratorService service = new AdministratorServiceImpl();
         return service.removePersonInfo(identity, num);
+    }
+
+    protected int modifyOperation(String identity, String[] information) {
+        //创建service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        return service.modifyPersonInfo(identity, information);
+    }
+
+    protected int modifyOperation(String[] information) {
+        //创建service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        return service.modifyCourseInfo(information);
+    }
+
+    protected int addOperation(String[] information) {//添加课程
+        //创建service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        return service.addCourse(information);
+    }
+
+    protected int removeOperation(String num) {
+        //创建service对象
+        IAdministratorService service = new AdministratorServiceImpl();
+        return service.removeCourseInfo(num);
     }
 }

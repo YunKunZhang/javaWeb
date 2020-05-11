@@ -115,13 +115,48 @@ public class AdministratorServiceImpl implements IAdministratorService {
     }
 
     @Override
+    public String[] queryMajorByCourseNum(String courseNum) {
+        return dao.queryMajorByCourseNum(courseNum);
+    }
+
+    @Override
     public int addPerson(String identity, String[] information) {
         return dao.addPerson(identity, information);
     }
 
     @Override
+    public int addCourse(String[] information) {
+        return dao.addCourse(information);
+    }
+
+    @Override
     public int removePersonInfo(String identity, String num) {
         return dao.removePersonInfo(identity, num);
+    }
+
+    @Override
+    public int removeCourseInfo(String num) {
+        return dao.removeCourseInfo(num);
+    }
+
+    @Override
+    public int modifyPersonInfo(String identity, String[] information) {
+        return dao.modifyPersonInfo(identity, information);
+    }
+
+    @Override
+    public int modifyCourseInfo(String[] information) {
+        return dao.modifyCourseInfo(information);
+    }
+
+    @Override
+    public int selectControl(String control) {
+        return dao.selectControl(control);
+    }
+
+    @Override
+    public int control(String control, String nowStatus) {
+        return dao.control(control, nowStatus);
     }
 
     @Override

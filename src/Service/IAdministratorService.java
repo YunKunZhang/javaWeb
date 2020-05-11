@@ -63,11 +63,32 @@ public interface IAdministratorService {
     //根据学院查询专业
     String[] getMajor(String department);
 
+    //根据课程号查询专业、学院信息
+    String[] queryMajorByCourseNum(String courseNum);
+
     //添加教师（学生）
     int addPerson(String identity, String[] information);
 
+    //添加课程
+    int addCourse(String[] information);
+
     //删除符合条件的学生（教师）信息
     int removePersonInfo(String identity, String num);
+
+    //删除符合条件的课程信息
+    int removeCourseInfo(String num);
+
+    //修改符合条件的学生（教师）信息
+    int modifyPersonInfo(String identity, String[] information);
+
+    //修改符合条件的课程信息
+    int modifyCourseInfo(String[] information);
+
+    //查询课程（成绩录入）控制
+    int selectControl(String control);
+
+    //课程（成绩录入）控制
+    int control(String control, String nowStatus);
 
     //修改管理员端用户密保答案
     int modifyAdministratorAnswer(String num, String oldAnswer, String newAnswer);

@@ -12,6 +12,7 @@ public class Course implements Serializable {
     private String evaluationMode;//考核方式
     private String teacherName;//授课老师
     private String people;//选课人数
+    private String allowed;//允许人数
     private String character;//修读性质
     private int score;//成绩
     private String status;//状态（是否被选）
@@ -90,6 +91,14 @@ public class Course implements Serializable {
 
     public void setPeople(int people,int allowed) {
         this.people = people+"/"+allowed;
+    }
+
+    public String getAllowed() {
+        return allowed;
+    }
+
+    public void setAllowed(String allowed) {
+        this.allowed = allowed;
     }
 
     public String getCharacter() {
