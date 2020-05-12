@@ -101,6 +101,7 @@ window.onload = function () {
                     alert("后台异常，请稍后重试");
                 } else {
                     window.location = data;
+                    alert("修改成功");
                 }
             },
             error: function () {

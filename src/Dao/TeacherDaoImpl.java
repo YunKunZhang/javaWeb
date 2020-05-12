@@ -215,28 +215,33 @@ public class TeacherDaoImpl implements ITeacherDao {
 
     @Override
     public int modifyGradeInfo(String semester, String courseName, String stuNum, String score) {
-        //返回-1表示后台异常
-        try {
-            conn = JDBCUtils.getConnection();
-            String sql = "UPDATE \n" +
-                    "  election \n" +
-                    "  INNER JOIN course \n" +
-                    "    ON course.`CourseNum` = election.`CourseNum` \n" +
-                    "  INNER JOIN student \n" +
-                    "    ON election.`StudentNum` = student.`StudentNum` SET Grade = ? \n" +
-                    "WHERE Semester = ?\n" +
-                    "  AND courseName = ? \n" +
-                    "  AND election.studentNum = ?" +
-                    "  AND control.`IfInputGrade`=1";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, score);
-            ps.setString(2, semester);
-            ps.setString(3, courseName);
-            ps.setString(4, stuNum);
+        //返回-2表示后台异常,-1表示未在成绩录入期，0表示录入失败，1表示成功
+        boolean flag = ifInputGrade() == 1 ? true : false;
+        if (flag) {
+            try {
+                conn = JDBCUtils.getConnection();
+                String sql = "UPDATE \n" +
+                        "  election \n" +
+                        "  INNER JOIN course \n" +
+                        "    ON course.`CourseNum` = election.`CourseNum` \n" +
+                        "  INNER JOIN student \n" +
+                        "    ON election.`StudentNum` = student.`StudentNum` SET Grade = ? \n" +
+                        "WHERE Semester = ?\n" +
+                        "  AND courseName = ? \n" +
+                        "  AND election.studentNum = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, score);
+                ps.setString(2, semester);
+                ps.setString(3, courseName);
+                ps.setString(4, stuNum);
 
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+                return ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return -2;
+            } finally {
+                JDBCUtils.close1(conn, ps, rs);
+            }
         }
         return -1;
     }
@@ -335,6 +340,27 @@ public class TeacherDaoImpl implements ITeacherDao {
             JDBCUtils.close1(conn, ps, rs);
         }
         return exist;
+    }
+
+    //    查询是否开始成绩录入
+
+    @Override
+    public int ifInputGrade() {
+        try {
+            conn = JDBCUtils.getConnection();
+            String sql = "select IfInputGrade from control";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close1(conn, ps, rs);
+        }
+        return -1;
     }
 
     //     获取学期

@@ -527,10 +527,13 @@
         //为“重置”按钮添加事件监听
         $('#recovery').click(function () {
             if (ifQuery && ifTakeCourse) {
-                $('.numberSum').html(optionSum);
-                $('.pageSum').html(Math.ceil(optionSum / 15));
+                $("#condition1 option[value='条件']").attr("selected",true);
+                $("#condition2 option[value='附加条件']").attr("selected",true);
+                $('#import').val("");
                 ajaxPaging(1);
                 ifQuery = !ifQuery;
+                $('.numberSum').html(optionSum);
+                $('.pageSum').html(Math.ceil(optionSum / 15));
             } else if (!ifTakeCourse) {
                 alert("非正选时间，无法重置");
             } else if (!ifQuery) {

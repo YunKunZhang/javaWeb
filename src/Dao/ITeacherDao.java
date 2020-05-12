@@ -39,6 +39,9 @@ public interface ITeacherDao {
     //查询数据库中是否有该教师账号
     boolean ifExist(String num);
 
+    //查询是否开启成绩录入
+    int ifInputGrade();
+
     //获取学期字符串
     String getSemester(String semester);
 }

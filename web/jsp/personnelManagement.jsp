@@ -392,10 +392,13 @@
         //为“重置”按钮添加事件监听
         $('#recovery').click(function () {
             if (ifQuery) {
-                $('.numberSum').html(optionSum);
-                $('.pageSum').html(Math.ceil(optionSum / 15));
+                $("#condition1 option[value='条件']").attr("selected",true);
+                $("#condition2 option[value='附加条件']").attr("selected",true);
+                $('#import').val("");
                 ajaxPerson(identity, "selectAll", 1);
                 ifQuery = !ifQuery;
+                $('.numberSum').html(optionSum);
+                $('.pageSum').html(Math.ceil(optionSum / 15));
             } else if (!ifQuery) {
                 alert("没有查询，无需重置");
             }

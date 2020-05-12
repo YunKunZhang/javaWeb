@@ -372,6 +372,7 @@ public class AdministratorDaoImpl implements IAdministratorDao {
                 course.setTeachingMethod(rs.getString("TeachingMethod"));
                 course.setEvaluationMode(rs.getString("EvaluationMode"));
                 course.setTeacherName(rs.getString("TeacherName"));
+                course.setAllowed(rs.getString("CourseAllowed"));
                 arr[index] = course;
                 index++;
             }
@@ -404,9 +405,9 @@ public class AdministratorDaoImpl implements IAdministratorDao {
             if ("课程".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("CourseName=?") : sql.concat("CourseName like ?");
             } else if ("学号".equals(condition1)) {
-                sql = "精确".equals(condition2) ? sql.concat("StudentNum=?") : sql.concat("StudentNum like ?");
+                sql = "精确".equals(condition2) ? sql.concat("student.`StudentNum`=?") : sql.concat("student.`StudentNum` like ?");
             } else if ("姓名".equals(condition1)) {
-                sql = "精确".equals(condition2) ? sql.concat("StudentName=?") : sql.concat("StudentName like ?");
+                sql = "精确".equals(condition2) ? sql.concat("student.`StudentName`=?") : sql.concat("student.`StudentName` like ?");
             }
             ps = conn.prepareStatement(sql);
             ps.setString(1, semester);
@@ -453,9 +454,9 @@ public class AdministratorDaoImpl implements IAdministratorDao {
             if ("课程".equals(condition1)) {
                 sql = "精确".equals(condition2) ? sql.concat("courseName=? limit ?,?") : sql.concat("courseName like ? limit ?,?");
             } else if ("学号".equals(condition1)) {
-                sql = "精确".equals(condition2) ? sql.concat("StudentNum=?") : sql.concat("StudentNum like ? limit ?,?");
+                sql = "精确".equals(condition2) ? sql.concat("student.`StudentNum`=?") : sql.concat("student.`StudentNum` like ? limit ?,?");
             } else if ("姓名".equals(condition1)) {
-                sql = "精确".equals(condition2) ? sql.concat("StudentName=?") : sql.concat("StudentName like ? limit ?,?");
+                sql = "精确".equals(condition2) ? sql.concat("student.`StudentName`=?") : sql.concat("student.`StudentName` like ? limit ?,?");
             }
             ps = conn.prepareStatement(sql);
 
