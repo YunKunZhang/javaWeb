@@ -130,7 +130,7 @@
 </div>
 </body>
 <script type="text/javascript">
-    javascript:window.history.forward(1);//禁止浏览器退出后返回
+    window.history.forward(1);//禁止浏览器退出后返回
 
     $(document).ready(function () {
 

@@ -142,32 +142,35 @@
                     <c:if test="${identity!='administrator'}">
                         <div class="form-group">
                             <label>所在院系</label>
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle"
-                                            data-toggle="dropdown">
-                                        院系
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" id="department">
-                                        <li><a href="javascript:;">化学化工学院</a></li>
-                                        <li><a href="javascript:;">信息工程学院</a></li>
-                                        <li><a href="javascript:;">体育学院</a></li>
-                                        <li><a href="javascript:;">园艺园林学院</a></li>
-                                        <li><a href="javascript:;">食品学院</a></li>
-                                        <li><a href="javascript:;">经管学院</a></li>
-                                        <li><a href="javascript:;">机电学院</a></li>
-                                        <li><a href="javascript:;">资源与环境学院</a></li>
-                                        <li><a href="javascript:;">文法学院</a></li>
-                                        <li><a href="javascript:;">体育学院</a></li>
-                                        <li><a href="javascript:;">外国语学院</a></li>
-                                        <li><a href="javascript:;">数学学院</a></li>
-                                        <li><a href="javascript:;">服装学院</a></li>
-                                        <li><a href="javascript:;">教育学院</a></li>
-                                    </ul>
+                            <div class="form-group">
+                                <label>所在院系</label>
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            院系
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" id="department">
+                                            <li><a href="javascript:;">化学化工学院</a></li>
+                                            <li><a href="javascript:;">信息工程学院</a></li>
+                                            <li><a href="javascript:;">体育学院</a></li>
+                                            <li><a href="javascript:;">园艺园林学院</a></li>
+                                            <li><a href="javascript:;">食品学院</a></li>
+                                            <li><a href="javascript:;">经管学院</a></li>
+                                            <li><a href="javascript:;">机电学院</a></li>
+                                            <li><a href="javascript:;">资源与环境学院</a></li>
+                                            <li><a href="javascript:;">文法学院</a></li>
+                                            <li><a href="javascript:;">体育学院</a></li>
+                                            <li><a href="javascript:;">外国语学院</a></li>
+                                            <li><a href="javascript:;">数学学院</a></li>
+                                            <li><a href="javascript:;">服装学院</a></li>
+                                            <li><a href="javascript:;">教育学院</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" id="dep" name="department" class="form-control" autocomplete="off"
+                                           readonly="readonly">
                                 </div>
-                                <input type="text" id="dep" name="department" class="form-control" autocomplete="off"
-                                       readonly="readonly">
                             </div>
                         </div>
                     </c:if>

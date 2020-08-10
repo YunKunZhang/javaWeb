@@ -1,7 +1,5 @@
 package utils;
 
-import beans.Course;
-import beans.Student;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 

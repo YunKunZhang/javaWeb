@@ -8,6 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<c:set value="${pageContext.request.session.getAttribute('identity')}" var="identity"></c:set>
+<c:set value="${pageContext.request.getAttribute('status')}" var="status"></c:set>
 <head>
     <title>成绩信息</title>
     <link href="com/css/common_style.css" rel="stylesheet" type="text/css">
@@ -16,7 +18,6 @@
     <script src="com/js/studentJS/bootstrap.min.js"></script>
 </head>
 <body>
-<c:set value="${pageContext.request.session.getAttribute('identity')}" var="identity"></c:set>
 <div class="cztable">
     <table class="table table-hover table-condensed table-bordered">
         <caption>
@@ -46,6 +47,15 @@
                 <input type="text" id="import" class="ui_input_txt02" autocomplete="off"/>
                 <button class="ui_input_btn01" id="query">查询</button>
                 <button class="ui_input_btn01" id="recovery">重置</button>
+                <button class="ui_input_btn01" id="ifChoose" style="float: right">
+                    <c:if test="${status=='1'}">
+                        可输入
+                    </c:if>
+                    <c:if test="${status!='1'}">
+                        不可输入
+                    </c:if>
+                </button>
+
             </c:if>
         </caption>
         <thead>
@@ -137,29 +147,28 @@
             </div>
         </div>
     </c:if>
-</div>
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">成绩录入</h4>
-            </div>
-            <div class="modal-body">
-                <ul class="list-group">
-                    <label>成绩</label>
-                    <li class="list-group-item">
-                        <input type="text" id="score" name="grade" autocomplete="off">
-                    </li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="submit">提交更改</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.m-->
+    <c:if test="${identity=='teacher'}">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                    </div>
+                    <div class="modal-body">
+                        <lebel>成绩</lebel>
+                        <input type="text" id="score" name="score" class="form-control"
+                               autocomplete="off">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="submit">提交</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </c:if>
 </div>
 </body>
 
@@ -259,19 +268,6 @@
         let courseName;//被操作的课程名
         let stuNum;//被操作的学生学号
         let node;//被操作的行中成绩节点
-
-        //点击“操作”时将表格中的成绩加入到输入框
-        $('.edit').click(function () {
-            let td = $(this).parent().prevAll();
-            if (td.eq(0).text() != "未填入") {
-                $('#score').val(td.eq(0).text());
-            } else {
-                $('#score').val("");
-            }
-            courseName = td.eq(7).text();
-            stuNum = td.eq(6).text();
-            node = td.eq(0);
-        });
 
         //为不同的跳转按钮添加事件监听
         //"首页"按钮
@@ -382,6 +378,19 @@
             }
         }
 
+        //点击“操作”时将表格中的成绩加入到输入框
+        $('.edit').click(function () {
+            let td = $(this).parent().prevAll();
+            if (td.eq(0).text() != "未填入") {
+                $('#score').val(td.eq(0).text());
+            } else {
+                $('#score').val("");
+            }
+            courseName = td.eq(7).text();
+            stuNum = td.eq(6).text();
+            node = td.eq(0);
+        });
+
         //为拟态框中的提交按钮添加事件监听
         $('#submit').click(function () {
             let score = $('#score').val();
@@ -402,8 +411,10 @@
                 async: true,
                 data: {"semester": semester, "courseName": courseName, "stuNum": stuNum, "score": score},
                 success: function (result) {
-                    if (result == -1) {
+                    if (result == -2) {
                         alert("后台异常");
+                    } else if (result == -1) {
+                        alert("未在成绩录入期");
                     } else if (result == 0) {
                         alert("修改失败");
                     } else {
@@ -588,10 +599,13 @@
         //为“重置”按钮添加事件监听
         $('#recovery').click(function () {
             if (ifQuery && ifTakeCourse) {
-                $('.numberSum').html(gradeSum);
-                $('.pageSum').html(Math.ceil(gradeSum / 15));
+                $("#condition1 option[value='条件']").attr("selected", true);
+                $("#condition2 option[value='附加条件']").attr("selected", true);
+                $('#import').val("");
                 ajaxPaging(1);
                 ifQuery = !ifQuery;
+                $('.numberSum').html(gradeSum);
+                $('.pageSum').html(Math.ceil(gradeSum / 15));
             } else if (!ifTakeCourse) {
                 alert("非正选时间，无法重置");
             } else if (!ifQuery) {
@@ -627,6 +641,39 @@
 
                         $('.numberSum').html(temp);
                         $('.pageSum').html(Math.ceil(temp / 15));
+                    }
+                },
+                error: function () {
+                    alert("请求异常，请稍后重试");
+                }
+            });
+        }
+
+        //为“正选”按钮添加事件监听器
+        $('#ifChoose').click(function () {
+            let outcome = window.confirm("是否调整正选状态");
+            if (outcome) {
+                alertChoose($('#ifChoose').html());
+            }
+        });
+
+        //发送ajax请求修改可选状态
+        function alertChoose(nowStatus) {
+            $.ajax({
+                type: "GET",
+                url: "alertInfo",
+                async: true,
+                data: {"alertStatus": "grade", "nowStatus": nowStatus},
+                success: function (result) {
+                    if (result == 1) {
+                        if ($('#ifChoose').html() == "可输入") {
+                            $('#ifChoose').html("不可输入");
+                        } else {
+                            $('#ifChoose').html("可输入");
+                        }
+                        alert("修改成功");
+                    } else {
+                        alert("后台异常，请稍后重试");
                     }
                 },
                 error: function () {
